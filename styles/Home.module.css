@@ -12,7 +12,6 @@
   justify-content: inherit;
   align-items: inherit;
   font-size: 0.85rem;
-  max-width: var(--max-width);
   width: 100%;
   z-index: 2;
   font-family: var(--font-mono);
@@ -46,66 +45,150 @@
   width: 100%;
 }
 
+
+.cards {
+	text-align: center;
+	max-width: 640px;
+	margin: 0 auto;
+}
+
 .card {
-  padding: 1rem 1.2rem;
-  border-radius: var(--border-radius);
-  background: rgba(var(--card-rgb), 0);
-  border: 1px solid rgba(var(--card-border-rgb), 0);
-  transition: background 200ms, border 200ms;
+	position: relative;
+	display: inline-block;
+	font: 16px 'Trebuchet MS';
+	height:12vh;
+    width:10vh;
+	margin: 10px;
+	border-radius: 4px;
+	background: #fff;
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.18);
+
+
+	
+
+}
+.card:before,
+.card:after {
+    content: attr(value);
+    position: absolute;
+    width: 12px;
+    text-align: center;
+    letter-spacing: -2px;
 }
 
-.card span {
-  display: inline-block;
-  transition: transform 200ms;
+
+.card:before {
+    top:4px;
+    left: 4px;
 }
 
-.card h2 {
-  font-weight: 600;
-  margin-bottom: 0.7rem;
+.card:after {
+    bottom: 4px;
+    right: 4px;
+    transform: rotate(180deg)
+}
+.diamond:before,
+
+.diamond {
+    color: red;
+    
+ 
+}
+.heart {
+    color: red;
+    
+ 
+}
+.heart:before,
+.heart:after {
+    content: attr(value) ' ♥';
+}
+.spade {
+    color: black;
+    
+}
+.club:before,
+
+.club {
+    color: black;
+    
 }
 
-.card p {
-  margin: 0;
-  opacity: 0.6;
-  font-size: 0.9rem;
-  line-height: 1.5;
-  max-width: 30ch;
+.spade:before,
+.spade:after {
+    content: attr(value) ' ♠';
+}
+.diamond:after {
+    content: attr(value) ' ◆';
+}
+.club:after {
+    content: attr(value) ' ♣';
 }
 
-.center {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  position: relative;
-  padding: 4rem 0;
+
+.card__inner {
+	box-sizing: border-box;
+	position: absolute;
+	display: flex;
+	justify-content: space-between;
+	top: 6 * 4px;
+	left: 6 * 4px;
+	right: 6 * 4px;
+	bottom: 6 * 4px;
+	
+
+}
+.card__column {
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	
+
+}
+.--centered {
+    justify-content: center;
+}
+.card__symbol {
+	display: inline-block;
+	height: 40px;
+	text-align: center;
+	
 }
 
-.center::before {
-  background: var(--secondary-glow);
-  border-radius: 50%;
-  width: 480px;
-  height: 360px;
-  margin-left: -400px;
+.card__symbol:before {
+    font-size: 40px;
+    line-height: 40px;
 }
 
-.center::after {
-  background: var(--primary-glow);
-  width: 240px;
-  height: 180px;
-  z-index: -1;
+.heart &:before {
+    content: '♥';
 }
 
-.center::before,
-.center::after {
-  content: '';
-  left: 50%;
-  position: absolute;
-  filter: blur(45px);
-  transform: translateZ(0);
+.spade &:before {
+    content: '♠';
+}
+.diamond &:before {
+    content: 'd';
 }
 
-.logo {
-  position: relative;
+.club &:before {
+    content: 'c';
+}
+.card__symbol--rotated,
+.card__symbol:last-of-type {
+    transform: rotate(180deg);
+}
+
+.card__symbol:first-of-type {
+    transform: rotate(0);
+}
+
+.card__symbol--big {
+    flex-basis: 0.25 * 240px;
+}
+
+.card__symbol--huge {
+    flex-basis: 0.45 * 240px;
 }
 /* Enable hover only on non-touch devices */
 @media (hover: hover) and (pointer: fine) {
@@ -226,4 +309,114 @@
   to {
     transform: rotate(0deg);
   }
+}
+
+.Deck_space_outer{
+    display:flex;
+    flex-flow:column nowrap;
+}
+.Deck_space{
+    border:solid purple;
+    position: relative;
+    height:fit-content;
+    display:flex;
+    flex-flow: column nowrap;
+    flex-grow:1;
+    flex-basis:1;
+}
+.Deck_space_inner{
+    display:flex;
+    flex-grow:1;
+    flex-basis:1;
+
+    flex-flow:row nowrap;
+}
+.deck{
+    border:solid green;
+    height: 11vh;
+    width:10vh;
+    position: relative;
+    flex-basis:1;
+    flex-grow:1;
+
+}
+.played{
+    border:solid orange;
+    display:flex;
+    width:22vh;
+    height:15vh;
+    padding:10px;
+}
+.discard{
+    position: relative;
+    border:solid;
+    height: 11vh;
+    width:10vh;
+    flex-basis:1;
+    flex-grow:1;
+
+    border-color: red;
+}
+.points_and_play_area{
+    display:flex;
+    flex-flow:row nowrap;
+}
+.facedownCard{
+    position: absolute;
+    top:10;
+    left:0;
+    width: 160px;
+    height: 160px;
+    border: 2px solid;
+    background-image: url("./cardBackground.png");
+    background-size: cover;
+}
+.bets{
+    display:flex;
+    flex-flow:column nowrap;
+    border:solid gray;
+}
+.bet_row{
+    display:flex;
+    flex-flow: row nowrap;
+}
+.bet{
+    border:inset;
+    flex-grow: 1;
+}
+.betLabel{
+    font-size: 6vh;
+}
+.points{
+display:flex;
+flex-flow:row nowrap;
+border:outset;
+flex-basis:1;
+align-items: center;
+justify-content: center;
+text-align: center;
+font-size:2vh;
+}
+.offPoint{
+    flex-grow: 1;
+    color:black;
+    background-color: rgb(101, 96, 108);
+    display:grid;
+    margin:10px;
+}
+.onPoint{
+    flex-grow: 1;
+
+    background-color: rgb(6, 67, 14);
+    color:white;
+}
+.pointName{
+    border:solid;
+    border-color:white;;
+
+}
+.pointValue{
+    border:solid;
+    border-color:white;;
+    border-top:none;
 }

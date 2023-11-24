@@ -105,3 +105,15 @@ a {
     color-scheme: dark;
   }
 }
+@color: #c0c0c0;
+@background: #f0f0f0;
+@gutter: 10px;
+@font-size: 16px;
+
+@card-background: #fff;
+@card-padding: 4px;
+@card-width: 172px;
+@card-height: 240px;
+@card-color-red: #e44145;
+@card-color-black: #252525;
+@card-symbol-size: 40px;
