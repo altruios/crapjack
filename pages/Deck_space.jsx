@@ -11,7 +11,9 @@ function Deck_space(props) {
                 <div className={styles.Deck_space_inner} ><div>
 
                     <div className={styles.deck}>deck <br />
-                        {props.deck.map((x, i) => <div className={styles.facedownCard}>{i}</div>)}
+                        {props.deck.map((x, i) => <div 
+                            key={`deck-card${i}`}
+                            className={styles.facedownCard}>{i}</div>)}
                     </div>
                 </div>
                 </div>
@@ -19,6 +21,7 @@ function Deck_space(props) {
                     className={styles.played}
                 >
                     {props.played.map((x, i) => <PlayingCard
+                        key={`p`+i}
                         suit={x?.suit}
                         value={x?.value}
                         name={x?.name}

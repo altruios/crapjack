@@ -6,6 +6,8 @@ function Bets(props){
         <div className={styles.bet_row}>
 
         {[BETS[0],BETS[1]].map((x,i)=><Bet 
+            key = {`bet-${i}`}
+
             amount={props.current_bets[i]}
             currently_betting={props.currently_betting}
             handleAdd={()=>props.handleAdd(i)} 
@@ -20,6 +22,8 @@ function Bets(props){
         <div className={styles.bet_row}>
 
 {BETS.slice(2,5).map((x,i)=><Bet 
+    key = {`bet-${i}`}
+
     amount={props.current_bets[i+2]}
     currently_betting={props.currently_betting}
     handleAdd={()=>props.handleAdd(i+2)} 
@@ -36,6 +40,8 @@ function Bets(props){
 <div className={styles.bet_row}>
 
 {BETS.slice(5,14).map((x,i)=><Bet 
+    key = {`bet-${i}`}
+
     amount={props.current_bets[i+5]}
     currently_betting={props.currently_betting}
     handleAdd={()=>props.handleAdd(i+5)} 
@@ -52,6 +58,8 @@ function Bets(props){
 <div className={styles.bet_row}>
 
 {BETS.slice(14,22).map((x,i)=><Bet 
+    key = {`bet-${i}`}
+
     amount={props.current_bets[i+14]}
     currently_betting={props.currently_betting}
     handleAdd={()=>props.handleAdd(i+14)} 
@@ -68,6 +76,8 @@ function Bets(props){
 <div className={styles.bet_row}>
 
 {BETS.slice(22,27).map((x,i)=><Bet 
+    key = {`bet-${i}`}
+
     amount={props.current_bets[i+22]}
     currently_betting={props.currently_betting}
     handleAdd={()=>props.handleAdd(i+22)} 
@@ -84,6 +94,7 @@ function Bets(props){
 <div className={styles.bet_row}>
 
 {BETS.slice(27,34).map((x,i)=><Bet 
+    key = {`bet-${i}`}
     amount={props.current_bets[i+30]}
     currently_betting={props.currently_betting}
     handleAdd={()=>props.handleAdd(i+30)} 
