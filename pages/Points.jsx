@@ -14,7 +14,10 @@ function Points(props){
                 </div>
                 <div className={styles.pointBin}>
                     {
-                    x.bin.map((h,j)=><div key={`bin-${i}-${j}`} className={styles.points_hand}> {h.cards.map(c=><PlayingCard {...c}  />)}</div>)
+                    x.bin.map((h,j)=><div 
+                        key={`bin-${i}-${j}`} 
+                        className={styles.points_hand}> 
+                            {h.cards.map((c,k)=><PlayingCard key ={ `point-bin-cards-${i}-${j}-${k}`} {...c}  />)}</div>)
                     }
                     </div>
             </div>)
