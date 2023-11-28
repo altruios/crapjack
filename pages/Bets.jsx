@@ -13,12 +13,13 @@ function Bets(props){
             label={x.label} 
             odds={x.odds} 
             once={x.once} 
+            mod={x.mod_threshold}
             /> )}
 
         </div>
         <div className={styles.bet_row}>
 
-{BETS.slice(2,7).map((x,i)=><Bet 
+{BETS.slice(2,5).map((x,i)=><Bet 
     amount={props.current_bets[i+2]}
     currently_betting={props.currently_betting}
     handleAdd={()=>props.handleAdd(i+2)} 
@@ -26,106 +27,88 @@ function Bets(props){
     label={x.label} 
     odds={x.odds} 
     once={x.once} 
+    mod={x.mod_threshold}
+
     /> )}
 </div>
 
 
 <div className={styles.bet_row}>
 
-{BETS.slice(7,12).map((x,i)=><Bet 
-    amount={props.current_bets[i+7]}
+{BETS.slice(5,14).map((x,i)=><Bet 
+    amount={props.current_bets[i+5]}
     currently_betting={props.currently_betting}
-    handleAdd={()=>props.handleAdd(i+7)} 
-    handleClear={()=>props.handleClear(i+7)}
+    handleAdd={()=>props.handleAdd(i+5)} 
+    handleClear={()=>props.handleClear(i+5)}
     label={x.label} 
     odds={x.odds} 
     once={x.once} 
+    mod={x.mod_threshold}
+
     /> )}
 </div>
 
 
 <div className={styles.bet_row}>
 
-{BETS.slice(12,20).map((x,i)=><Bet 
-    amount={props.current_bets[i+12]}
+{BETS.slice(14,22).map((x,i)=><Bet 
+    amount={props.current_bets[i+14]}
     currently_betting={props.currently_betting}
-    handleAdd={()=>props.handleAdd(i+12)} 
-    handleClear={()=>props.handleClear(i+12)}
+    handleAdd={()=>props.handleAdd(i+14)} 
+    handleClear={()=>props.handleClear(i+14)}
     label={x.label} 
     odds={x.odds} 
     once={x.once} 
+    mod={x.mod_threshold}
+
     /> )}
 </div>
 
 
 <div className={styles.bet_row}>
 
-{BETS.slice(20,28).map((x,i)=><Bet 
-    amount={props.current_bets[i+20]}
+{BETS.slice(22,27).map((x,i)=><Bet 
+    amount={props.current_bets[i+22]}
     currently_betting={props.currently_betting}
-    handleAdd={()=>props.handleAdd(i+20)} 
-    handleClear={()=>props.handleClear(i+20)}
+    handleAdd={()=>props.handleAdd(i+22)} 
+    handleClear={()=>props.handleClear(i+22)}
     label={x.label} 
     odds={x.odds} 
     once={x.once} 
+    mod={x.mod_threshold}
+
     /> )}
 </div>
 
 
 <div className={styles.bet_row}>
 
-{BETS.slice(28,33).map((x,i)=><Bet 
-    amount={props.current_bets[i+28]}
+{BETS.slice(27,34).map((x,i)=><Bet 
+    amount={props.current_bets[i+30]}
     currently_betting={props.currently_betting}
-    handleAdd={()=>props.handleAdd(i+28)} 
-    handleClear={()=>props.handleClear(i+28)}
+    handleAdd={()=>props.handleAdd(i+30)} 
+    handleClear={()=>props.handleClear(i+30)}
     label={x.label} 
     odds={x.odds} 
     once={x.once} 
-    /> )}
-</div>
+    mod={x.mod_threshold}
 
-
-<div className={styles.bet_row}>
-
-{BETS.slice(33,36).map((x,i)=><Bet 
-    amount={props.current_bets[i+33]}
-    currently_betting={props.currently_betting}
-    handleAdd={()=>props.handleAdd(i+33)} 
-    handleClear={()=>props.handleClear(i+33)}
-    label={x.label} 
-    odds={x.odds} 
-    once={x.once} 
-    /> )}
-</div>
-
-
-<div className={styles.bet_row}>
-
-{BETS.slice(36,40).map((x,i)=><Bet 
-    amount={props.current_bets[i+36]}
-    currently_betting={props.currently_betting}
-    handleAdd={()=>props.handleAdd(i+36)} 
-    handleClear={()=>props.handleClear(i+36)}
-    label={x.label} 
-    odds={x.odds} 
-    once={x.once} 
     /> )}
 </div>
 
     </div>)
 }
 function Bet(props){
-return (<div className={styles.bet}>
-        <div className={styles.betLabel}>
+return (<div className={styles.bet} onClick={props.currently_betting?props.handleAdd:null}>
+        {props.currently_betting?<button onClick={props.handleClear}>clear</button>:null}
+        <div className={props.currently_betting?styles.bettable_label:styles.bet_label}>
             {props.label}
             </div>
         odds: {props.odds}/1<br />
         {props.once?"one time bet":""}<br />
         current bet: {props.amount}<br />
-        {props.currently_betting?<div>
+        {props.mod>0?`multiply with ${props.mod} cards drawn`:null}
 
-        <button onClick={props.handleAdd}>add minimum bet</button><button onClick={props.handleClear}>clear</button></div>:null}
         
 </div>)
 }
