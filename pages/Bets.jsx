@@ -1,4 +1,4 @@
-import BETS from './Bets_data'
+import BETS from '../lib/Bets_data'
 import styles from '@/styles/Home.module.css'
 
 function Bets(props){
