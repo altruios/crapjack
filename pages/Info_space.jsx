@@ -11,7 +11,7 @@ return (
             <br />
             current value:{props.current_value} <br />
             current $: {props.money} <br />
-            cards left: {props.deck.length}< br />
+            cards left: {props.deck?.length}< br />
 
         </div>
     </div>

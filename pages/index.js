@@ -19,7 +19,6 @@ function mod_to_card(num){
     return {name:_name,value:Math.min(value,10),suit}
 }
 const inter = Inter({ subsets: ['latin'] })
-
 export default function Home() {
     const [bet_time,set_bet_time]=useState(15);
     const [casino_money,set_casino_money]=useState(1000000000)
