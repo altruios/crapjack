@@ -6,7 +6,9 @@ import Deck_space from './Deck_space'
 import { useEffect } from 'react'
 import BETS from './Bets_data'
 import Bets from './Bets'
+import Record from './Record'
 import Points from './Points'
+import Info_space from './Info_space'
 function mod_to_card(num){
     const suits = {0:"heart",1:"diamond",2:"spade",3:"club"}
     const names = {0:"ace",1:"two",2:"three",3:"four", 4: "five",5: "six",6: "seven",7: "eight",8: "nine",9: "ten",10: "jack",11: "queen",12:"king"}
@@ -26,7 +28,7 @@ export default function Home() {
     const [currently_betting,set_currently_betting]=useState(true);
     const [win_count,set_win_count]=useState(0)
     const [lose_count,set_lose_count]=useState(0)
-    const [win_on,set_win_on]=useState(11);
+    const [win_on,set_win_on]=useState(16);
     const [streak,set_streak]=useState(0)
     const [draw_count,set_draw_count]=useState(2);
     const [point,set_points]=useState(0);
@@ -36,9 +38,11 @@ export default function Home() {
     const [discard,set_discard]=useState([])
     const [current_bets,set_current_bets]=useState(Array(BETS.length).fill(0));
     const [timeLeft, setTimeLeft] = useState(bet_time);
+    const [record,set_record]=useState([{value:0,codes:['start']}])
+    const [played_hands,set_played_hands]=useState([]);
 
     useEffect(() => {
-        if (!timeLeft) {
+        if (timeLeft<=0) {
             set_currently_betting(false);    
         };
     
@@ -55,16 +59,40 @@ export default function Home() {
       }, [timeLeft]);
     
     console.log("index");
-    function payout(c1,c2){
+    function card_feature_signals(cards){
+        const signals =[];
+        const rc = ['jack','queen','king'];
+        const v = cards.reduce((acc,item)=>acc+=item.value,0);
+        if(cards.every((c,i,arr)=>c.suit==arr[0].suit))signals.push("matched suits")
+        if(cards.every((c,i,arr)=>c.name=="ten"))signals.push("tens")
+        if(cards.every((c,i,arr)=>c.name=="jack"))signals.push("jacks")
+        if(cards.every((c,i,arr)=>c.name=="queen")) signals.push("queens")
+        if(cards.every((c,i,arr)=>c.name=="king"))  signals.push("kings")
+        if(cards.every((c,_,arr)=>c.value==2)&&v==12)signals.push("hard 12")
+        if(cards.every((c,_,arr)=>c.value==2)&&v==14)signals.push("hard 14")
+        if(cards.every((c,_,arr)=>c.value==2)&&v==16)signals.push("hard 16")
+        if(cards.every((c,_,arr)=>c.value==2)&&v==18)signals.push("hard 18")
+        if(cards.every((c,_,arr)=>c.suit=="diamond"))signals.push("diamonds")
+        if(cards.every((c,_,arr)=>c.suit=="spade"))signals.push("spades")
+        if(cards.every((c,_,arr)=>c.suit=="club"))signals.push("clubs")
+        if(cards.every((c,_,arr)=>c.suit=="heart"))signals.push("hearts")
+
+
+        if(cards.every(c=>rc.some(x=>x==c.name)))signals.push("royals")
+        if(cards.every(c=>rc.every(x=>x!=c.name)))signals.push("plebs");
+        if(cards.every((c,_,arr)=>c.name==arr[0].name&&c.value>9))signals.push("fullx");
+        return signals;
+    }
+    function payout(cs){
         console.log("paying out");
+        const v = cs.reduce((acc,item)=>acc+=item.value,0);
+        let total_win = 0;
         for(let i=0;i< BETS.length;i++){
-            const v = c1.value+c2.value;
-            const win_amount = BETS[i].calculate(c1,c2,v,point,discard.length==0?0:7,current_bets[i]);
-            console.log("calculating bets",BETS[i],win_amount,c1,c2,v)
-        
-            set_money(prev=>prev+win_amount)
-            set_casino_money(prev=>prev-win_amount);
+            const win_amount = BETS[i].calculate(cs,v,point,discard.length==0?0:16,current_bets[i]);
+            total_win+=win_amount;
         }
+        set_casino_money(prev=>prev-total_win);
+        set_money(prev=>prev+total_win)
     }
     function handleAdd(n){
         set_current_bets(prev=>{
@@ -77,23 +105,24 @@ export default function Home() {
         set_current_bets(prev=>{
             return prev.map((x,i)=>i==n?0:x)
         })
+        console.log("amounts",amount);
         set_money(prev=>prev+=amount);
     }
-    function reset(signal){
+    function reset(){
         const cards_to_return = [...discard,...played];
         set_played([]);
         set_discard([]);
         set_points(0)
         set_deck(prev=>shuffle([...prev,...cards_to_return]));
-        handle_reset_bets(signal);
+        set_played_hands([]);
     }
-    function handle_reset_bets(signal){
+    function handle_reset_bets(signals){
         let clear_arr=[]
         for(let i=0;i<BETS.length;i++){
             
             if(BETS[i].once){
                 clear_arr.push(1);
-            }else if(BETS[i].clear_ons.some(s=>s==signal)){
+            }else if(BETS[i].clear_ons.some(s=>signals.some(z=>z==s))){
                     clear_arr.push(1);
             }else{
                 clear_arr.push(0)
@@ -128,36 +157,46 @@ export default function Home() {
           }
           set_deck(shuffle(deck))
     },[])
+    function sumValue(cards){
+        return cards.reduce((acc,item)=>acc+=item.value,0);
+    }
     function Draw(){
         console.log("click");
-        const cards = [deck[0],deck[1]]
+        const cards = deck.reduce((acc,item)=>{
+            if(sumValue(acc)>10)return acc
+            acc.push(item);
+            return acc;
+        },[])
         if(played.length>0){
             set_discard(prev=>[...prev,...played])
             set_played([]);
         }
-        set_deck(prev=>prev.slice(2))
+        set_deck(prev=>prev.slice(cards.length))
+        const draw_value = cards.reduce((acc,item)=>acc+=item.value,0);
         set_played(prev=>[...cards]);
-        const draw_value = cards[0].value+cards[1].value
+        set_played_hands(prev=>[...prev,{cards,value:draw_value}])
+        const b_win =((point==draw_value) || (point==0&&draw_value==win_on));
+        const b_lose = draw_value==win_on&&!b_win;
         if(point==0&&draw_value!=win_on){
             //set first point, else win on else check if lose
             set_streak(streak+1);
             set_currently_betting(true);
             setTimeLeft(bet_time);
             set_points(draw_value);
-        }else if(point==draw_value){
+        }else if(b_win){
             console.log("WIN!!!")
             set_win_count(prev=>prev+1);
             set_current_bets((prev)=>prev.map((x,i)=>i==1?0:x))
             set_currently_betting(true)
-            reset('win')
-        }else if(draw_value==win_on){
+            reset()
+        }else if(b_lose){
             console.log("LOSE")
             set_streak(0);
             set_current_bets(prev=>prev.map(x=>0))
             set_lose_count(prev=>prev+1);
             setTimeLeft(bet_time);
             set_currently_betting(true)
-            reset("lose");
+            reset();
 
         }else{
             console.log("game continues...");
@@ -166,8 +205,11 @@ export default function Home() {
             set_currently_betting(true)
             setTimeLeft(bet_time);
         }
-        payout(cards[0],cards[1])
-        handle_reset_bets(`v${draw_value}`);
+        payout(cards)
+        const win_signal = b_lose?"lose":b_win?"win":null;
+        const signals = [`v${draw_value}`,win_signal,...card_feature_signals(cards)]
+        handle_reset_bets(signals);
+        set_record(prev=>[{value:draw_value,codes:signals.slice(1)},...prev])
     }   
 
     return (
@@ -178,7 +220,6 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className={`${styles.main} ${inter.className}`}>
-        <div className={styles.points_and_play_area}>
         <div className={styles.description}>
           <p>
             rules:<br />
@@ -190,6 +231,9 @@ export default function Home() {
             streak {streak}<br />
           </p>
           </div>
+          <div className={styles.game_board}>
+
+        <Record list={record} limit={30} />
         <Deck_space 
             point={point} 
             deck={deck} 
@@ -199,31 +243,30 @@ export default function Home() {
             currently_betting={currently_betting}
             timeLeft={timeLeft}
             money={money}
-            current_value={played[0]?.value+played[1]?.value}
+            current_value={played.reduce((acc,item)=>acc+=item?.value||0,0)}
+            />
+            <Info_space 
+            point={point} 
+            currently_betting={currently_betting}
+            timeLeft={timeLeft}
+            money={money}
+            deck={deck} 
+
+            current_value={played.reduce((acc,item)=>acc+=item?.value||0,0)}
             />
             <Points list = {
-                [
-                    {value:2,"name":"two", on:point==2},
-                    {value:3,"name":"three", on:point==3},
-                    {value:4,"name":"four", on:point==4},
-                    {value:5,"name":"five", on:point==5},
-                    {value:6,"name":"six", on:point==6},
-                    {value:7,"name":"seven", on:point==7},
-                    {value:8,"name":"eight", on:point==8},
-                    {value:9,"name":"nine", on:point==9},
-                    {value:10,"name":"ten", on:point==10},
-                    {value:12,"name":"twelve", on:point==12},
-                    {value:13,"name":"thirteen", on:point==13},
-                    {value:14,"name":"fourteen", on:point==14},
-                    {value:15,"name":"fifteen", on:point==15},
-                    {value:16,"name":"sixteen", on:point==16},
-                    {value:17,"name":"seventeen", on:point==17},
-                    {value:18,"name":"eighteen", on:point==18},
-                    {value:19,"name":"nineteen", on:point==19},
-                    {value:20,"name":"twenty", on:point==20},
-                ]} />
-        </div>
-            <Bets current_bets={current_bets} currently_betting={currently_betting} handleAdd={handleAdd} handleClear={handleClear} />
+                ["eleven","twelve","thirteen",
+                   "fourteen","fifteen","remove","seventeen",
+                   "eighteen","nineteen","twenty"]
+                .map((x,i,a)=>({value:11+i,name:x,on:(point==(i+11)),bin:played_hands.filter((y)=>(y.value==(i+11))) }))
+                .filter(x=>x.name!='remove')
+} />
+            <Bets current_bets={current_bets} 
+                currently_betting={currently_betting} 
+                handleAdd={handleAdd} 
+                handleClear={handleClear} 
+                />
+                </div>
       </main>
     </>
   )

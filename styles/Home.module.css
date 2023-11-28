@@ -56,9 +56,9 @@
 	position: relative;
 	display: inline-block;
 	font: 16px 'Trebuchet MS';
-	height:12vh;
-    width:10vh;
-	margin: 10px;
+	height:7vh;
+    min-width: 5vh;;
+    margin: 10px;
 	border-radius: 4px;
 	background: #fff;
 	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.18);
@@ -70,23 +70,12 @@
 .card:before,
 .card:after {
     content: attr(value);
-    position: absolute;
     width: 12px;
     text-align: center;
     letter-spacing: -2px;
 }
 
 
-.card:before {
-    top:4px;
-    left: 4px;
-}
-
-.card:after {
-    bottom: 4px;
-    right: 4px;
-    transform: rotate(180deg)
-}
 .diamond:before,
 
 .diamond {
@@ -128,7 +117,6 @@
 
 .card__inner {
 	box-sizing: border-box;
-	position: absolute;
 	display: flex;
 	justify-content: space-between;
 	top: 6 * 4px;
@@ -191,22 +179,6 @@
     flex-basis: 0.45 * 240px;
 }
 /* Enable hover only on non-touch devices */
-@media (hover: hover) and (pointer: fine) {
-  .card:hover {
-    background: rgba(var(--card-rgb), 0.1);
-    border: 1px solid rgba(var(--card-border-rgb), 0.15);
-  }
-
-  .card:hover span {
-    transform: translateX(4px);
-  }
-}
-
-@media (prefers-reduced-motion) {
-  .card:hover span {
-    transform: none;
-  }
-}
 
 /* Mobile */
 @media (max-width: 700px) {
@@ -312,8 +284,11 @@
 }
 
 .Deck_space_outer{
+    grid-area:deck;
     display:flex;
+    border: outset red;
     flex-flow:column nowrap;
+    background: yellow;
 }
 .Deck_space{
     border:solid purple;
@@ -323,13 +298,15 @@
     flex-flow: column nowrap;
     flex-grow:1;
     flex-basis:1;
+    background:green
 }
 .Deck_space_inner{
     display:flex;
     flex-grow:1;
     flex-basis:1;
-
+    border: solid yellow;
     flex-flow:row nowrap;
+    background-color: grey;
 }
 .deck{
     border:solid green;
@@ -343,9 +320,9 @@
 .played{
     border:solid orange;
     display:flex;
-    width:22vh;
-    height:15vh;
+    height:11vh;
     padding:10px;
+    background-color: blue;
 }
 .discard{
     position: relative;
@@ -361,6 +338,16 @@
     display:flex;
     flex-flow:row nowrap;
 }
+.game_board{
+    display:grid;
+    grid-template-areas: 
+    "record deck points info"
+    "record bets bets bets";
+    border:solid purple;
+}
+.Info_space{
+    grid-area:info;
+}
 .facedownCard{
     position: absolute;
     top:10;
@@ -372,6 +359,7 @@
     background-size: cover;
 }
 .bets{
+    grid-area:bets;
     display:flex;
     flex-flow:column nowrap;
     border:solid gray;
@@ -383,14 +371,25 @@
 .bet{
     border:inset;
     flex-grow: 1;
+    }
+.bettable_label{    
+    font-size: 3vh;
+
+        }
+.bettable_label:hover{
+    border:outset;
+    background-color:green;
+
 }
-.betLabel{
-    font-size: 6vh;
+.bet_label{
+    font-size: 3vh;
 }
 .points{
-display:flex;
-flex-flow:row nowrap;
-border:outset;
+    grid-area: points;
+    display:flex;
+    flex-flow:row nowrap;
+    background-color: gray;;
+    border:outset green;
 flex-basis:1;
 align-items: center;
 justify-content: center;
@@ -419,4 +418,53 @@ font-size:2vh;
     border:solid;
     border-color:white;;
     border-top:none;
+
+}
+.Record{
+    grid-area:record;
+    display:flex;
+    flex-flow: column nowrap;
+    border:solid red;
+    height:100%;
+    overflow: hidden;
+    width: 20vh;
+
+}
+.Record>div{
+    border:solid;
+    border-color:#7a7a7a;
+    display:flex;
+    flex-flow:row nowrap;
+    flex-basis: 1;
+}
+.Record>div>div{
+    flex-basis: 1;
+    flex-grow: 1;
+    display:flex;
+    flex-flow:row nowrap;
+    padding-left:10px;
+}
+
+.Record>div>div>div{
+    padding-left:10px;
+    text-align: start;
+    
+}
+.pointBin{
+    display:flex;
+    flex-flow: column nowrap;
+    position: relative;
+    border:outset red;
+    height:10vh;
+
+
+}
+.points_hand{
+    display:flex;
+    flex-flow: row nowrap;
+    border:solid black;
+    margin-bottom: -100px;
+    background-color: green;
+    overflow: hidden;
+    z-index: 100;
 }
