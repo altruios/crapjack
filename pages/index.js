@@ -9,6 +9,7 @@ import Bets from './Bets'
 import Record from './Record'
 import Points from './Points'
 import Info_space from './Info_space'
+import shuffle from '@/lib/shuffle'
 function mod_to_card(num){
     const suits = {0:"heart",1:"diamond",2:"spade",3:"club"}
     const names = {0:"ace",1:"two",2:"three",3:"four", 4: "five",5: "six",6: "seven",7: "eight",8: "nine",9: "ten",10: "jack",11: "queen",12:"king"}
@@ -129,23 +130,7 @@ export default function Home() {
         }
         set_current_bets(prev=>prev.map((x,i)=>clear_arr[i]?0:x))
     }
-    function shuffle(array) {
-        let currentIndex = array.length,  randomIndex;
-      
-        // While there remain elements to shuffle.
-        while (currentIndex > 0) {
-      
-          // Pick a remaining element.
-          randomIndex = Math.floor(Math.random() * currentIndex);
-          currentIndex--;
-      
-          // And swap it with the current element.
-          [array[currentIndex], array[randomIndex]] = [
-            array[randomIndex], array[currentIndex]];
-        }
-      
-        return array;
-      }
+ 
       useEffect(()=>{
 
         let deck=[];

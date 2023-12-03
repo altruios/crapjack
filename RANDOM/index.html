@@ -1,0 +1,128 @@
+<html><body>
+hello world
+</body>
+    <script>
+console.log("hi?")
+const deck =[];
+const card = (label,value,suit)=>({label,value,suit});
+const sum_cards = (cards)=> cards.reduce((a,c)=>a+=c.value,0);
+const will_make = (hand)=>sum_cards(hand)>10;
+function partition(array, isValid) {
+    return array.reduce(([pass, fail], elem) => {
+        return isValid(elem) ? [[...pass, elem], fail] : [pass, [...fail, elem]];
+    }, [[], []]);
+}
+  
+const suits = ['diamond','heart','spade','club'];
+const card_list = [
+    ['ace',1],
+    ['two',2],
+    ['three',3],
+    ['four',4],
+    ['five',5],
+    ['six',6],
+    ['seven',7],
+    ['eight',8],
+    ['nine',9],
+    ['ten',10],
+    ['jack',10],
+    ['queen',10],
+    ['king',10],   
+]
+const game_results =[];
+const raw_draw_results=[];
+
+    suits.forEach(s=>card_list.forEach(c=>{
+        console.log("making shit,",s,c.value);
+        deck.push(card(c[0],c[1],s))
+    }))
+
+const combos=[];
+deck.forEach((card1,i,arr)=>{
+    arr.forEach((card2,j)=>{
+        console.log("cards combos,",i ,j);
+        i==j?null:combos.push([card1,card2])
+    })
+})
+
+var [split_make,ref] = partition(combos,will_make)
+
+for(let i=11;i<=20;i++){
+    console.log("count for instant get of ",i,split_make.filter(c=>sum_cards(c)==i).length);
+}
+let depth=0;
+
+
+
+const report=(mess,split_make)=>{
+    const {hands,deck,type,depth}=mess.data;
+    console.log("reporting hands",hands.length,"depth",depth)
+    for(let i=11;i<=20;i++){
+        console.log("count for",i,split_make?.filter(c=>sum_cards(c)==i)?.length);
+    }
+    
+}
+function update(hands){
+    console.log("split make length",split_make.length);
+    split_make=[...split_make,...hands]
+    return split_make
+}
+function makeWorker2 (mess){
+    const {hands,deck,type,depth,key}=mess.data;
+    console.log("making worker2");
+    return new Promise(function(resolve) {
+    const worker = new Worker('./worker.js')
+    const data = makeDataObj(hands,deck,depth,"worker",key);
+    worker.postMessage(data);
+
+    worker.onmessage=(mess)=>{
+        const {hands,deck,type,depth,key}=mess.data;
+        if(type=="main"){
+            let s= update(hands);
+            report(mess,s);
+            
+        }else if(type=="worker"){
+            console.log("path from worker message")
+            const data = makeDataObj(hands,deck,depth+1,"worker",key);
+            worker.postMessage(data);
+            worker_pool.push(worker);
+            console.log("wpl",worker_pool.length);
+        }else if(type=="resolve"){
+            console.log(mess.data,"in this case is?")
+            console.log("exited at depth",depth)
+            console.log(`resolving promise!"${key}`);
+            resolve({"key":key});
+        }
+    }
+    })
+}
+
+
+let key=0;
+const makeDataObj=(hands,deck,depth,type,key)=>({hands,deck,depth,type,key})
+const worker_pool =[];
+for(let i=0;i<ref.length;i++){
+    const message = {data:{
+        deck,
+        depth:0,
+        hands:[ref[i]],
+        type:"worker",
+        key:key++
+    }}
+    console.log("path from main make worker")
+
+    const worker =makeWorker2(message);
+    worker_pool.push(worker);
+}
+Promise.all(worker_pool).then(()=>{
+    console.log("all workers done?");
+    
+    const final_values = [...split_make].map(x=>{
+        return `${x.map(y=>y.label+", "+y.value+","+y.suit)},${sum_cards(x)}\n`
+    })
+    
+    console.log(final_values);
+})
+
+</script>
+</html>
