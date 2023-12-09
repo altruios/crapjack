@@ -173,7 +173,7 @@ function round_of_games(n){
     return r_o_g;
 }
 function main(){
-    const gameCount=1_000_000;
+    const gameCount=1_500_000;
     const rc=gameCount;
     
     const record = round_of_games(gameCount);
@@ -201,6 +201,9 @@ function main(){
             o.odds_of_values_drawn[key]+=prop;
 
         })
+            o.continue_odds[a.continue_count]+=1;
+            o.continue_percentages[a.continue_count]+=1;
+
         Object.entries(a.sum_of_signals).forEach((kvp)=>{
             const [key, prop]=kvp;
             o.sum_of_signals[key]+=prop;
@@ -217,6 +220,8 @@ function main(){
         lost_on_percentages:{0:0,11:0,12:0,13:0,14:0,15:0,16:0,17:0,18:0,19:0,20:0},
         lost_on_odds:{0:0,11:0,12:0,13:0,14:0,15:0,16:0,17:0,18:0,19:0,20:0},
         continue_counts:[],
+        continue_percentages:{0:0,1:0,2:0,3:0,4:0,5:0,6:0,7:0,8:0,9:0,10:0,11:0,12:0,13:0,14:0,15:0,16:0,17:0,18:0,19:0,20:0},
+        continue_odds:{0:0,1:0,2:0,3:0,4:0,5:0,6:0,7:0,8:0,9:0,10:0,11:0,12:0,13:0,14:0,15:0,16:0,17:0,18:0,19:0,20:0},
         hands_length_odds:{},
         average_continue:0,
         sum_of_values_drawn:{11:0,12:0,13:0,14:0,15:0,16:0,17:0,18:0,19:0,20:0},
@@ -224,6 +229,10 @@ function main(){
         sum_of_signals:SIGNALS.reduce((o,s)=>{o[s]=0;return o},{}),
         odds_of_signals:SIGNALS.reduce((o,s)=>{o[s]=0;return o},{})
     })
+    for(const prop in combined.continue_percentages){
+        combined.continue_percentages[prop]/=rc;
+        combined.continue_odds[prop]=1/(combined.continue_odds[prop]/rc)
+    }
     for(const prop in combined.won_on_percentages){
         combined.won_on_percentages[prop]/=rc
         combined.won_on_odds[prop]=1/(combined.won_on_odds[prop]/rc)
@@ -253,16 +262,16 @@ function main(){
    }
 
 console.log(Math.floor(1/(
-    ((4*8)/(52*8))*
-    ((((4*8)-1)/((52*8)-1)))*
-    ((((4*8)-2)/((52*8)-2)))*
-    ((((4*8)-3)/((52*8)-3)))*
-    ((((4*8)-4)/((52*8)-4)))*
-    ((((4*8)-5)/((52*8)-5)))*
-    ((((4*8)-6)/((52*8)-6)))*
-    ((((4*8)-7)/((52*8)-7)))*
-    ((((4*8)-8)/((52*8)-8)))*
-    ((((4*8)-9)/((52*8)-9)))*
-    ((((4*8)-10)/((52*8)-10))
+    ((4*4)/(52*4))*
+    ((((4*4)-1)/((52*4)-1)))*
+    ((((4*4)-2)/((52*4)-2)))*
+    ((((4*4)-3)/((52*4)-3)))*
+    ((((4*4)-4)/((52*4)-4)))*
+    ((((4*4)-5)/((52*4)-5)))*
+    ((((4*4)-6)/((52*4)-6)))*
+    ((((4*4)-7)/((52*4)-7)))*
+    ((((4*4)-8)/((52*4)-8)))*
+    ((((4*4)-9)/((52*4)-9)))*
+    ((((4*4)-10)/((52*4)-10))
     ))))
    main();
